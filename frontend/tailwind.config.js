@@ -1,0 +1,1 @@
+module.exports={content:['./src/**/*.{js,jsx}'],theme:{extend:{fontFamily:{heading:['Cormorant Garamond','serif'],body:['Outfit','sans-serif'],arabic:['Amiri','serif']}}},plugins:[require('tailwindcss-animate')]};
