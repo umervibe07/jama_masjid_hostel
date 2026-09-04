@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, APIRouter, HTTPException, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from starlette.middleware.cors import CORSMiddleware
-from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo import AsyncMongoClient
 from pydantic import BaseModel, EmailStr, Field
 
 
@@ -34,7 +34,7 @@ JWT_SECRET = os.getenv(
     "dev-only-change-me"
 )
 
-client = AsyncIOMotorClient(MONGO_URL)
+client = AsyncMongoClient(MONGO_URL)
 db = client[DB_NAME]
 
 app = FastAPI(
