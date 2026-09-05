@@ -16,43 +16,43 @@ import { Hero } from './About';
 
 const faqs = [
   {
-    q: 'Hostel admission kaise lein?',
-    a: 'Hostel admission ke liye website ke Hostel Admission section mein jaakar application form fill karke submit karein. Application review ke baad admission process complete kiya jayega.',
+    q: 'How can I apply for hostel admission?',
+    a: 'To apply for hostel admission, go to the Hostel Admission section on the website, fill out the application form, and submit it. The application will be reviewed before the admission process is completed.',
   },
   {
-    q: 'Hostel ki fees kya hai?',
-    a: 'Single Room ₹2,000/month aur Shared 4 Beds ₹1,000/month.',
+    q: 'What are the hostel fees?',
+    a: 'The Single Room costs ₹2,000 per month, while the Shared 4 Beds option costs ₹1,000 per month.',
   },
   {
-    q: 'Kaunse room options available hain?',
-    a: 'Single Room aur Shared 4 Beds.',
+    q: 'What room options are available?',
+    a: 'The available room options are Single Room and Shared 4 Beds.',
   },
   {
-    q: 'Admission ke liye documents kya chahiye?',
-    a: 'Admission application mein student ki basic information, DOB, mobile, email, address, college/institution, course aur emergency contact details provide karni hoti hain.',
+    q: 'What documents are required for admission?',
+    a: 'The admission application requires basic student information, including date of birth, mobile number, email address, residential address, college or institution name, course name, and emergency contact details.',
   },
   {
-    q: 'Prayer timings kahan milengi?',
-    a: 'Daily Prayer Timings website ke Prayer Timings section mein available hain.',
+    q: 'Where can I find the prayer timings?',
+    a: 'Daily prayer timings are available in the Prayer Timings section of the website.',
   },
   {
-    q: 'Hostel facilities kya hain?',
-    a: 'Room type ke according beds, study tables/desks, storage/wardrobe, common study space jaise facilities available hain.',
+    q: 'What facilities are available in the hostel?',
+    a: 'Depending on the room type, hostel facilities may include beds, study tables or desks, storage or wardrobes, and common study spaces.',
   },
   {
-    q: 'Contact/visit kaise karein?',
-    a: 'Website ke Contact section se contact karein. Visit se pehle contact karke details confirm karna better hai.',
+    q: 'How can I contact or visit the hostel?',
+    a: 'You can contact us through the Contact section of the website. It is recommended to contact us before visiting to confirm the details.',
   },
   {
-    q: 'Masjid ki location kahan hai?',
-    a: 'Exact location aur directions Contact section mein available hain.',
+    q: 'Where is the mosque located?',
+    a: 'The exact mosque location and directions are available in the Contact section of the website.',
   },
   {
-    q: 'Masjid mein kya facilities available hain?',
-    a: 'Daily prayers aur religious activities ke saath community aur students ke liye available facilities ki details Facilities section mein di gayi hain.',
+    q: 'What facilities are available in the mosque?',
+    a: 'The mosque provides daily prayers and religious activities, along with facilities for the community and students. More details are available in the Facilities section.',
   },
   {
-    q: 'Masjid staff ke names kya hain?',
+    q: 'Who are the members of the mosque staff?',
     a: 'Hafiz Wahid Shahb — Imam & Khatib and Teacher. Iliyas Shah Shahab — Muazzin & Caretaker.',
   },
 ];
