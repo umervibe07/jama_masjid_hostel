@@ -20,6 +20,7 @@ import {
   Building2,
   Eye,
   DoorOpen,
+  Star,
 } from "lucide-react";
 
 /* =========================
@@ -35,6 +36,7 @@ const tabs = [
   ["hostel", "Hostel", Bed],
   ["facilities", "Facilities", Building2],
   ["staff", "Mosque Staff", Users],
+  ["reviews", "Visitor Reviews", Star],
   ["contact", "Contact Info", MapPin],
 ];
 
@@ -96,6 +98,7 @@ export default function AdminDashboard() {
         {t === "hostel" && <Hostel />}
         {t === "facilities" && <Facilities />}
         {t === "staff" && <Staff />}
+        {t === "reviews" && <Reviews />}
         {t === "contact" && <Contact />}
       </main>
     </div>
@@ -2798,6 +2801,199 @@ function Staff() {
                 </div>
               </div>
             </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* =========================
+   VISITOR REVIEWS
+========================= */
+
+function Reviews() {
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [busyId, setBusyId] = useState(null);
+
+  const loadReviews = async () => {
+    try {
+      const res = await api.get("/reviews/admin");
+      setReviews(res.data || []);
+    } catch (e) {
+      toast.error(formatError(e));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadReviews();
+  }, []);
+
+  const updateStatus = async (id, status) => {
+    try {
+      setBusyId(id);
+
+      await api.patch(`/reviews/${id}`, { status });
+
+      toast.success(
+        status === "approved"
+          ? "Review approved"
+          : "Review rejected"
+      );
+
+      await loadReviews();
+    } catch (e) {
+      toast.error(formatError(e));
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  const deleteReview = async (id) => {
+    if (!window.confirm("Delete this review permanently?")) {
+      return;
+    }
+
+    try {
+      setBusyId(id);
+      await api.delete(`/reviews/${id}`);
+      toast.success("Review deleted");
+      await loadReviews();
+    } catch (e) {
+      toast.error(formatError(e));
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  const Stars = ({ rating }) => (
+    <div className="flex gap-0.5" aria-label={`${rating} out of 5 stars`}>
+      {[1, 2, 3, 4, 5].map((n) => (
+        <Star
+          key={n}
+          className={`w-4 h-4 ${
+            n <= rating
+              ? "fill-[#C5A059] text-[#C5A059]"
+              : "text-slate-300"
+          }`}
+        />
+      ))}
+    </div>
+  );
+
+  const statusClass = (status) => {
+    if (status === "approved") {
+      return "bg-emerald-50 text-emerald-700";
+    }
+
+    if (status === "rejected") {
+      return "bg-red-50 text-red-700";
+    }
+
+    return "bg-amber-50 text-amber-700";
+  };
+
+  return (
+    <div>
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6">
+        <div>
+          <h2 className="font-heading text-3xl text-[#0D3B2E]">
+            Visitor Reviews
+          </h2>
+          <p className="text-sm text-slate-500 mt-1">
+            Approve, reject or delete reviews submitted by website visitors.
+          </p>
+        </div>
+
+        <div className="text-sm text-slate-500">
+          {reviews.length} total
+        </div>
+      </div>
+
+      {loading ? (
+        <div className="card-elegant p-10 text-center text-slate-500">
+          Loading reviews...
+        </div>
+      ) : reviews.length === 0 ? (
+        <div className="card-elegant p-10 text-center text-slate-500">
+          No visitor reviews yet.
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {reviews.map((item) => (
+            <article
+              key={item.id}
+              className="card-elegant p-5 sm:p-6 bg-white"
+            >
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <h3 className="font-semibold text-[#0D3B2E]">
+                      {item.name}
+                    </h3>
+
+                    <span
+                      className={`text-xs font-semibold px-2.5 py-1 rounded-full uppercase tracking-wide ${statusClass(
+                        item.status
+                      )}`}
+                    >
+                      {item.status || "pending"}
+                    </span>
+                  </div>
+
+                  <div className="mt-2">
+                    <Stars rating={item.rating} />
+                  </div>
+
+                  <p className="text-slate-600 leading-7 mt-4 whitespace-pre-wrap">
+                    {item.review}
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap gap-2 shrink-0">
+                  {item.status !== "approved" && (
+                    <button
+                      type="button"
+                      disabled={busyId === item.id}
+                      onClick={() =>
+                        updateStatus(item.id, "approved")
+                      }
+                      className="px-4 py-2 rounded-full bg-emerald-50 text-emerald-700 hover:bg-emerald-100 disabled:opacity-50 flex items-center gap-1.5"
+                    >
+                      <Check className="w-4 h-4" />
+                      Approve
+                    </button>
+                  )}
+
+                  {item.status !== "rejected" && (
+                    <button
+                      type="button"
+                      disabled={busyId === item.id}
+                      onClick={() =>
+                        updateStatus(item.id, "rejected")
+                      }
+                      className="px-4 py-2 rounded-full bg-red-50 text-red-700 hover:bg-red-100 disabled:opacity-50 flex items-center gap-1.5"
+                    >
+                      <X className="w-4 h-4" />
+                      Reject
+                    </button>
+                  )}
+
+                  <button
+                    type="button"
+                    disabled={busyId === item.id}
+                    onClick={() => deleteReview(item.id)}
+                    className="px-4 py-2 rounded-full border border-red-200 text-red-600 hover:bg-red-50 disabled:opacity-50 flex items-center gap-1.5"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </article>
           ))}
         </div>
       )}

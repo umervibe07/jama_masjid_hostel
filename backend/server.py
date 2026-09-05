@@ -547,13 +547,36 @@ async def hostel_rooms():
         1
     ).to_list(100)
 
-    if not rooms:
+    # Keep the public hostel options aligned with the current admission fees.
+    # Remove the retired 2-bed option and update the two active room prices.
+    await db.hostel_rooms.delete_many({
+        "name": {"$regex": r"^Shared\\s*[-—]?\\s*2\\s*beds$", "$options": "i"}
+    })
 
+    await db.hostel_rooms.update_many(
+        {"name": {"$regex": r"^Single\\s*Room$", "$options": "i"}},
+        {"$set": {"price": "₹ 2,000 / month"}}
+    )
+
+    await db.hostel_rooms.update_many(
+        {"name": {"$regex": r"^Shared\\s*[-—]?\\s*4\\s*beds$", "$options": "i"}},
+        {"$set": {"name": "Shared 4 Beds", "price": "₹ 1,000 / month"}}
+    )
+
+    rooms = await db.hostel_rooms.find(
+        {},
+        {"_id": 0}
+    ).sort(
+        "created_at",
+        1
+    ).to_list(100)
+
+    if not rooms:
         defaults = [
             {
                 "id": uid(),
                 "name": "Single Room",
-                "price": "₹ 8,000 / mo",
+                "price": "₹ 2,000 / month",
                 "description":
                     "Private furnished room with study table and storage.",
                 "image": "",
@@ -565,23 +588,10 @@ async def hostel_rooms():
             },
             {
                 "id": uid(),
-                "name": "Shared — 2 beds",
-                "price": "₹ 5,500 / mo",
+                "name": "Shared 4 Beds",
+                "price": "₹ 1,000 / month",
                 "description":
-                    "Twin-share room with two desks and wardrobe.",
-                "image": "",
-                "features": [
-                    "2 beds",
-                    "2 desks",
-                    "Wardrobe"
-                ]
-            },
-            {
-                "id": uid(),
-                "name": "Shared — 4 beds",
-                "price": "₹ 3,800 / mo",
-                "description":
-                    "Economical quad-share with common study space.",
+                    "Economical four-bed shared room with common study space.",
                 "image": "",
                 "features": [
                     "4 beds",
@@ -679,6 +689,12 @@ class Contact(BaseModel):
     phone: str = ""
     subject: str
     message: str
+
+
+class Review(BaseModel):
+    name: str = Field(min_length=2, max_length=100)
+    rating: int = Field(ge=1, le=5)
+    review: str = Field(min_length=5, max_length=1000)
 
 
 # =========================
@@ -1154,6 +1170,101 @@ async def message_delete(
     await db.messages.delete_one(
         {"id": id}
     )
+
+    return {
+        "ok": True
+    }
+
+
+# =========================
+# VISITOR REVIEWS
+# =========================
+
+@api.post("/reviews")
+async def review_add(x: Review):
+    d = x.model_dump()
+    d.update(
+        id=uid(),
+        status="pending",
+        created_at=now()
+    )
+
+    await db.reviews.insert_one(d)
+
+    return {
+        "message": "Review submitted successfully. It will appear after admin approval.",
+        "review_id": d["id"]
+    }
+
+
+@api.get("/reviews")
+async def reviews_public():
+    return await db.reviews.find(
+        {"status": "approved"},
+        {"_id": 0}
+    ).sort(
+        "created_at",
+        -1
+    ).to_list(100)
+
+
+@api.get("/reviews/admin")
+async def reviews_admin(u=Depends(admin)):
+    return await db.reviews.find(
+        {},
+        {"_id": 0}
+    ).sort(
+        "created_at",
+        -1
+    ).to_list(500)
+
+
+@api.patch("/reviews/{id}")
+async def review_status(
+    id: str,
+    payload: dict,
+    u=Depends(admin)
+):
+    requested_status = payload.get("status")
+
+    if requested_status not in ["pending", "approved", "rejected"]:
+        raise HTTPException(
+            400,
+            "Invalid review status"
+        )
+
+    result = await db.reviews.update_one(
+        {"id": id},
+        {"$set": {"status": requested_status}}
+    )
+
+    if result.matched_count == 0:
+        raise HTTPException(
+            404,
+            "Review not found"
+        )
+
+    return {
+        "ok": True,
+        "id": id,
+        "status": requested_status
+    }
+
+
+@api.delete("/reviews/{id}")
+async def review_delete(
+    id: str,
+    u=Depends(admin)
+):
+    result = await db.reviews.delete_one(
+        {"id": id}
+    )
+
+    if result.deleted_count == 0:
+        raise HTTPException(
+            404,
+            "Review not found"
+        )
 
     return {
         "ok": True
