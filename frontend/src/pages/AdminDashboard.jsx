@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import {
   Clock,
   Users,
+  Star,
   Calendar,
   Megaphone,
   Image,
@@ -35,6 +36,7 @@ const tabs = [
   ["hostel", "Hostel", Bed],
   ["facilities", "Facilities", Building2],
   ["staff", "Mosque Staff", Users],
+  ["reviews", "Visitor Reviews", Star],
   ["contact", "Contact Info", MapPin],
 ];
 
@@ -74,11 +76,10 @@ export default function AdminDashboard() {
             <button
               key={k}
               onClick={() => setT(k)}
-              className={`px-4 py-2 rounded-lg text-sm whitespace-nowrap flex gap-2 items-center ${
-                t === k
+              className={`px-4 py-2 rounded-lg text-sm whitespace-nowrap flex gap-2 items-center ${t === k
                   ? "bg-[#C5A059] text-[#0D3B2E] font-semibold"
                   : "text-white/80 hover:bg-white/5"
-              }`}
+                }`}
             >
               <I className="w-4 h-4" />
               {l}
@@ -96,6 +97,7 @@ export default function AdminDashboard() {
         {t === "hostel" && <Hostel />}
         {t === "facilities" && <Facilities />}
         {t === "staff" && <Staff />}
+        {t === "reviews" && <VisitorReviews />}
         {t === "contact" && <Contact />}
       </main>
     </div>
@@ -394,13 +396,12 @@ function Applications() {
                   </div>
 
                   <span
-                    className={`text-xs uppercase font-semibold px-3 py-1 rounded-full ${
-                      status === "approved"
+                    className={`text-xs uppercase font-semibold px-3 py-1 rounded-full ${status === "approved"
                         ? "bg-emerald-100 text-emerald-700"
                         : status === "rejected"
-                        ? "bg-red-100 text-red-700"
-                        : "bg-amber-100 text-amber-700"
-                    }`}
+                          ? "bg-red-100 text-red-700"
+                          : "bg-amber-100 text-amber-700"
+                      }`}
                   >
                     {status}
                   </span>
@@ -670,8 +671,8 @@ function Applications() {
                 [
                   "Full Name",
                   selectedPrint.full_name ||
-                    selectedPrint.student_name ||
-                    "-",
+                  selectedPrint.student_name ||
+                  "-",
                 ],
                 [
                   "Date of Birth",
@@ -683,14 +684,14 @@ function Applications() {
                 [
                   "College / Institution",
                   selectedPrint.college_name ||
-                    selectedPrint.institution ||
-                    "-",
+                  selectedPrint.institution ||
+                  "-",
                 ],
                 [
                   "Course",
                   selectedPrint.course_name ||
-                    selectedPrint.course ||
-                    "-",
+                  selectedPrint.course ||
+                  "-",
                 ],
                 ["Room No.", selectedPrint.room_no || "-"],
                 ["Status", "APPROVED"],
@@ -2945,6 +2946,243 @@ function Contact() {
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+/* =========================
+   VISITOR REVIEWS
+========================= */
+
+function VisitorReviews() {
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadReviews();
+  }, []);
+
+  async function loadReviews() {
+    try {
+      setLoading(true);
+
+      const res = await api.get("/reviews/admin");
+
+      setReviews(res.data || []);
+    } catch (e) {
+      toast.error(formatError(e));
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function updateStatus(id, status) {
+    try {
+      await api.patch(`/reviews/${id}`, {
+        status,
+      });
+
+      if (status === "approved") {
+        toast.success("Review approved");
+      } else if (status === "rejected") {
+        toast.success("Review rejected");
+      } else {
+        toast.success("Review moved to pending");
+      }
+
+      await loadReviews();
+    } catch (e) {
+      toast.error(formatError(e));
+    }
+  }
+
+  async function deleteReview(id) {
+    const confirmed = window.confirm(
+      "Delete this review permanently?"
+    );
+
+    if (!confirmed) return;
+
+    try {
+      await api.delete(`/reviews/${id}`);
+
+      toast.success("Review deleted");
+
+      await loadReviews();
+    } catch (e) {
+      toast.error(formatError(e));
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="card-elegant p-10 text-center">
+        <div className="text-slate-500">
+          Loading reviews...
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      {/* HEADER */}
+      <div className="mb-7">
+        <div className="flex items-center gap-3">
+          <div className="w-11 h-11 rounded-xl bg-[#E6F4F0] grid place-items-center">
+            <Star className="w-5 h-5 text-[#C5A059]" />
+          </div>
+
+          <div>
+            <h2 className="font-heading text-3xl text-[#0D3B2E]">
+              Visitor Reviews
+            </h2>
+
+            <p className="text-sm text-slate-500 mt-1">
+              Approve, reject or delete visitor reviews submitted
+              from the website.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* EMPTY STATE */}
+      {reviews.length === 0 ? (
+        <div className="card-elegant p-10 text-center">
+          <Star className="w-12 h-12 text-[#C5A059] mx-auto mb-4" />
+
+          <h3 className="font-heading text-2xl text-[#0D3B2E]">
+            No reviews yet
+          </h3>
+
+          <p className="text-sm text-slate-500 mt-2">
+            Visitor reviews will appear here after they are
+            submitted.
+          </p>
+        </div>
+      ) : (
+        /* REVIEWS LIST */
+        <div className="space-y-5">
+          {reviews.map((item) => {
+            const status = item.status || "pending";
+
+            return (
+              <div
+                key={item.id}
+                className="card-elegant p-6"
+              >
+                <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+
+                  {/* REVIEW CONTENT */}
+                  <div className="min-w-0 flex-1">
+
+                    {/* NAME + STATUS */}
+                    <div className="flex flex-wrap items-center gap-3">
+                      <h3 className="font-heading text-2xl font-semibold text-[#0D3B2E]">
+                        {item.name}
+                      </h3>
+
+                      <span
+                        className={`text-xs font-semibold px-3 py-1 rounded-full ${status === "approved"
+                            ? "bg-emerald-50 text-emerald-700"
+                            : status === "rejected"
+                              ? "bg-red-50 text-red-600"
+                              : "bg-amber-50 text-amber-700"
+                          }`}
+                      >
+                        {status}
+                      </span>
+                    </div>
+
+                    {/* STARS */}
+                    <div className="flex items-center gap-1 mt-3">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <Star
+                          key={star}
+                          className={`w-5 h-5 ${star <= Number(item.rating)
+                              ? "fill-[#C5A059] text-[#C5A059]"
+                              : "text-slate-300"
+                            }`}
+                        />
+                      ))}
+
+                      <span className="text-sm text-slate-500 ml-2">
+                        {item.rating}/5
+                      </span>
+                    </div>
+
+                    {/* REVIEW TEXT */}
+                    <p className="text-slate-600 leading-7 mt-4 break-words">
+                      {item.review}
+                    </p>
+
+                  </div>
+
+                  {/* ACTION BUTTONS */}
+                  <div className="flex flex-wrap gap-2 shrink-0">
+
+                    {status !== "approved" && (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          updateStatus(
+                            item.id,
+                            "approved"
+                          )
+                        }
+                        className="px-4 py-2.5 rounded-full bg-emerald-50 text-emerald-700 hover:bg-emerald-100 text-sm font-semibold transition"
+                      >
+                        Approve
+                      </button>
+                    )}
+
+                    {status !== "rejected" && (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          updateStatus(
+                            item.id,
+                            "rejected"
+                          )
+                        }
+                        className="px-4 py-2.5 rounded-full bg-red-50 text-red-600 hover:bg-red-100 text-sm font-semibold transition"
+                      >
+                        Reject
+                      </button>
+                    )}
+
+                    {status !== "pending" && (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          updateStatus(
+                            item.id,
+                            "pending"
+                          )
+                        }
+                        className="px-4 py-2.5 rounded-full bg-amber-50 text-amber-700 hover:bg-amber-100 text-sm font-semibold transition"
+                      >
+                        Pending
+                      </button>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        deleteReview(item.id)
+                      }
+                      className="px-4 py-2.5 rounded-full bg-slate-100 text-slate-700 hover:bg-slate-200 text-sm font-semibold transition"
+                    >
+                      Delete
+                    </button>
+
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
