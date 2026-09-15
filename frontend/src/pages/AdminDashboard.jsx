@@ -180,7 +180,6 @@ function Prayer() {
     </div>
   );
 }
-
 /* =========================
    APPLICATIONS
 ========================= */
@@ -285,37 +284,38 @@ function Applications() {
       toast.error(formatError(e));
     }
   };
-const formatDob = (value) => {
-  if (!value) return "-";
 
-  const d = new Date(value);
+  const formatDob = (value) => {
+    if (!value) return "-";
 
-  if (Number.isNaN(d.getTime())) {
-    return value;
-  }
+    const d = new Date(value);
 
-  return d.toLocaleDateString("en-IN", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
-};
+    if (Number.isNaN(d.getTime())) {
+      return value;
+    }
 
-const formatAdmissionDate = (value) => {
-  if (!value) return "-";
+    return d.toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  };
 
-  const d = new Date(value);
+  const formatAdmissionDate = (value) => {
+    if (!value) return "-";
 
-  if (Number.isNaN(d.getTime())) {
-    return value;
-  }
+    const d = new Date(value);
 
-  return d.toLocaleDateString("en-IN", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
-};
+    if (Number.isNaN(d.getTime())) {
+      return value;
+    }
+
+    return d.toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  };
 
   const printApplication = (x) => {
     if (x.status !== "approved") {
@@ -390,9 +390,14 @@ const formatAdmissionDate = (value) => {
                 ? roomDrafts[x.id]
                 : x.room_no || "";
 
-            const displayName = x.full_name || x.student_name || "-";
-            const collegeName = x.college_name || x.institution || "-";
-            const courseName = x.course_name || x.course || "-";
+            const displayName =
+              x.full_name || x.student_name || "-";
+
+            const collegeName =
+              x.college_name || x.institution || "-";
+
+            const courseName =
+              x.course_name || x.course || "-";
 
             return (
               <div
@@ -400,23 +405,41 @@ const formatAdmissionDate = (value) => {
                 key={x.id}
               >
                 <div className="flex justify-between gap-3 flex-wrap">
-                  <div>
-                    <h3 className="font-heading text-xl text-[#0D3B2E]">
-                      {displayName}
-                    </h3>
+                  <div className="flex gap-4">
+                    {x.photo ? (
+                      <img
+                        src={x.photo}
+                        alt="Student"
+                        className="w-16 h-20 object-cover rounded-lg border border-slate-300"
+                      />
+                    ) : null}
 
-                    <p className="text-xs text-slate-500 mt-1">
-                      {x.email} · {x.mobile} · {courseName} · {x.year}
-                    </p>
+                    <div>
+                      <h3 className="font-heading text-xl text-[#0D3B2E]">
+                        {displayName}
+                      </h3>
+
+                      <p className="text-xs text-slate-500 mt-1">
+                        {x.email} · {x.mobile} · {courseName} · {x.year}
+                      </p>
+
+                      <p className="text-xs text-slate-500 mt-1">
+                        Admission Date:{" "}
+                        <span className="font-semibold text-slate-700">
+                          {formatAdmissionDate(x.admission_date)}
+                        </span>
+                      </p>
+                    </div>
                   </div>
 
                   <span
-                    className={`text-xs uppercase font-semibold px-3 py-1 rounded-full ${status === "approved"
+                    className={`text-xs uppercase font-semibold px-3 py-1 rounded-full ${
+                      status === "approved"
                         ? "bg-emerald-100 text-emerald-700"
                         : status === "rejected"
-                          ? "bg-red-100 text-red-700"
-                          : "bg-amber-100 text-amber-700"
-                      }`}
+                        ? "bg-red-100 text-red-700"
+                        : "bg-amber-100 text-amber-700"
+                    }`}
                   >
                     {status}
                   </span>
@@ -448,6 +471,7 @@ const formatAdmissionDate = (value) => {
                       className="bg-[#0D3B2E] text-white px-4 py-2 rounded-lg text-sm flex items-center justify-center gap-2 disabled:opacity-60"
                     >
                       <DoorOpen className="w-4 h-4" />
+
                       {savingRoom === x.id
                         ? "Saving..."
                         : "Assign Room"}
@@ -460,6 +484,7 @@ const formatAdmissionDate = (value) => {
                     <span className="font-semibold text-slate-700">
                       Room No.:
                     </span>{" "}
+
                     <span className="text-[#0D3B2E] font-semibold">
                       {x.room_no || "-"}
                     </span>
@@ -539,34 +564,83 @@ const formatAdmissionDate = (value) => {
                 </button>
               </div>
 
+              <div className="flex justify-center mb-6">
+                {selectedView.photo ? (
+                  <img
+                    src={selectedView.photo}
+                    alt="Student"
+                    className="w-28 h-36 object-cover rounded-xl border-2 border-[#C5A059] shadow-sm"
+                  />
+                ) : (
+                  <div className="w-28 h-36 rounded-xl border border-slate-300 flex items-center justify-center text-xs text-slate-400">
+                    No Photo
+                  </div>
+                )}
+              </div>
+
               <div className="grid sm:grid-cols-2 gap-4 text-sm">
                 <div>
-                  <span className="font-semibold">Full Name</span>
-                  <p>{selectedView.full_name || selectedView.student_name || "-"}</p>
+                  <span className="font-semibold">
+                    Full Name
+                  </span>
+                  <p>
+                    {selectedView.full_name ||
+                      selectedView.student_name ||
+                      "-"}
+                  </p>
                 </div>
 
                 <div>
-                  <span className="font-semibold">Date of Birth</span>
-                  <p>{formatDob(selectedView.dob)}</p>
+                  <span className="font-semibold">
+                    Date of Birth
+                  </span>
+                  <p>
+                    {formatDob(selectedView.dob)}
+                  </p>
                 </div>
 
                 <div>
-                  <span className="font-semibold">Mobile</span>
-                  <p>{selectedView.mobile || "-"}</p>
+                  <span className="font-semibold">
+                    Admission Date
+                  </span>
+                  <p>
+                    {formatAdmissionDate(
+                      selectedView.admission_date
+                    )}
+                  </p>
                 </div>
 
                 <div>
-                  <span className="font-semibold">Email</span>
-                  <p>{selectedView.email || "-"}</p>
+                  <span className="font-semibold">
+                    Mobile
+                  </span>
+                  <p>
+                    {selectedView.mobile || "-"}
+                  </p>
+                </div>
+
+                <div>
+                  <span className="font-semibold">
+                    Email
+                  </span>
+                  <p>
+                    {selectedView.email || "-"}
+                  </p>
                 </div>
 
                 <div className="sm:col-span-2">
-                  <span className="font-semibold">Address</span>
-                  <p>{selectedView.address || "-"}</p>
+                  <span className="font-semibold">
+                    Address
+                  </span>
+                  <p>
+                    {selectedView.address || "-"}
+                  </p>
                 </div>
 
                 <div>
-                  <span className="font-semibold">College / Institution</span>
+                  <span className="font-semibold">
+                    College / Institution
+                  </span>
                   <p>
                     {selectedView.college_name ||
                       selectedView.institution ||
@@ -575,7 +649,9 @@ const formatAdmissionDate = (value) => {
                 </div>
 
                 <div>
-                  <span className="font-semibold">Course</span>
+                  <span className="font-semibold">
+                    Course
+                  </span>
                   <p>
                     {selectedView.course_name ||
                       selectedView.course ||
@@ -584,12 +660,18 @@ const formatAdmissionDate = (value) => {
                 </div>
 
                 <div>
-                  <span className="font-semibold">Room No.</span>
-                  <p>{selectedView.room_no || "-"}</p>
+                  <span className="font-semibold">
+                    Room No.
+                  </span>
+                  <p>
+                    {selectedView.room_no || "-"}
+                  </p>
                 </div>
 
                 <div>
-                  <span className="font-semibold">Status</span>
+                  <span className="font-semibold">
+                    Status
+                  </span>
                   <p className="uppercase">
                     {selectedView.status || "pending"}
                   </p>
@@ -608,6 +690,7 @@ const formatAdmissionDate = (value) => {
               minHeight: "269mm",
               padding: "10mm",
               boxSizing: "border-box",
+              position: "relative",
             }}
           >
             <div
@@ -677,6 +760,43 @@ const formatAdmissionDate = (value) => {
 
             <div
               style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                marginBottom: "6mm",
+              }}
+            >
+              {selectedPrint.photo ? (
+                <img
+                  src={selectedPrint.photo}
+                  alt="Student"
+                  style={{
+                    width: "32mm",
+                    height: "40mm",
+                    objectFit: "cover",
+                    border: "1.5px solid #0D3B2E",
+                    borderRadius: "3px",
+                  }}
+                />
+              ) : (
+                <div
+                  style={{
+                    width: "32mm",
+                    height: "40mm",
+                    border: "1px solid #cbd5e1",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "9px",
+                    color: "#64748b",
+                  }}
+                >
+                  No Photo
+                </div>
+              )}
+            </div>
+
+            <div
+              style={{
                 border: "1px solid #cbd5e1",
                 borderRadius: "6px",
                 overflow: "hidden",
@@ -686,46 +806,67 @@ const formatAdmissionDate = (value) => {
                 [
                   "Full Name",
                   selectedPrint.full_name ||
-                  selectedPrint.student_name ||
-                  "-",
+                    selectedPrint.student_name ||
+                    "-",
                 ],
                 [
                   "Date of Birth",
                   formatDob(selectedPrint.dob),
                 ],
-                ["Mobile", selectedPrint.mobile || "-"],
-                ["Email", selectedPrint.email || "-"],
-                ["Address", selectedPrint.address || "-"],
+                [
+                  "Admission Date",
+                  formatAdmissionDate(
+                    selectedPrint.admission_date
+                  ),
+                ],
+                [
+                  "Mobile",
+                  selectedPrint.mobile || "-",
+                ],
+                [
+                  "Email",
+                  selectedPrint.email || "-",
+                ],
+                [
+                  "Address",
+                  selectedPrint.address || "-",
+                ],
                 [
                   "College / Institution",
                   selectedPrint.college_name ||
-                  selectedPrint.institution ||
-                  "-",
+                    selectedPrint.institution ||
+                    "-",
                 ],
                 [
                   "Course",
                   selectedPrint.course_name ||
-                  selectedPrint.course ||
-                  "-",
+                    selectedPrint.course ||
+                    "-",
                 ],
-                ["Room No.", selectedPrint.room_no || "-"],
-                ["Status", "APPROVED"],
-              ].map(([label, value], index) => (
+                [
+                  "Room No.",
+                  selectedPrint.room_no || "-",
+                ],
+                [
+                  "Status",
+                  "APPROVED",
+                ],
+              ].map(([label, value], index, rows) => (
                 <div
                   key={label}
                   style={{
                     display: "grid",
                     gridTemplateColumns: "42% 58%",
                     borderBottom:
-                      index === 8
+                      index === rows.length - 1
                         ? "none"
                         : "1px solid #e2e8f0",
-                    minHeight: "13mm",
+                    minHeight: "12mm",
                   }}
                 >
                   <div
                     style={{
-                      padding: "3.5mm",
+                      padding: "3.2mm",
                       background: "#f8fafc",
                       fontWeight: "700",
                       fontSize: "11px",
@@ -737,7 +878,7 @@ const formatAdmissionDate = (value) => {
 
                   <div
                     style={{
-                      padding: "3.5mm",
+                      padding: "3.2mm",
                       fontSize: "12px",
                       color: "#0f172a",
                       wordBreak: "break-word",
@@ -751,7 +892,7 @@ const formatAdmissionDate = (value) => {
 
             <div
               style={{
-                marginTop: "22mm",
+                marginTop: "20mm",
                 display: "grid",
                 gridTemplateColumns: "1fr 1fr",
                 gap: "25mm",
