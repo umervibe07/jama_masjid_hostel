@@ -662,30 +662,30 @@ body {
 .pillars-section {
   position: relative;
   overflow: hidden;
-  padding: 55px 16px 60px;
+  padding: 55px 18px 60px;
   background:
     radial-gradient(
       circle at top left,
       rgba(30, 103, 151, 0.08),
-      transparent 35%
+      transparent 34%
     ),
     radial-gradient(
       circle at bottom right,
       rgba(197, 160, 89, 0.08),
-      transparent 35%
+      transparent 34%
     ),
-    #f8fbff;
+    #f7fbff;
 }
 
 .pillars-container {
-  max-width: 1250px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
 .pillars-heading {
   text-align: center;
   max-width: 760px;
-  margin: 0 auto 34px;
+  margin: 0 auto 32px;
 }
 
 .pillars-eyebrow {
@@ -702,10 +702,9 @@ body {
 }
 
 .pillars-line {
-  width: 35px;
+  width: 38px;
   height: 1px;
   background: #c5a059;
-  opacity: 0.8;
 }
 
 .pillars-title {
@@ -729,10 +728,10 @@ body {
 }
 
 .pillars-subtitle {
-  max-width: 650px;
+  max-width: 620px;
   margin: 12px auto 0;
   color: #64748b;
-  font-size: 13px;
+  font-size: 12px;
   line-height: 1.6;
 }
 
@@ -741,81 +740,52 @@ body {
 .pillars-grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 12px;
+  gap: 10px;
 }
 
 .pillar-card {
   position: relative;
-  min-height: 285px;
+  min-height: 265px;
   overflow: hidden;
-  border: 1px solid rgba(197, 160, 89, 0.55);
-  border-radius: 18px;
+  border: 1px solid rgba(197, 160, 89, 0.65);
+  border-radius: 12px;
   background: #ffffff;
-  box-shadow:
-    0 8px 22px rgba(13, 63, 102, 0.08),
-    0 2px 5px rgba(197, 160, 89, 0.06);
+  box-shadow: 0 6px 18px rgba(13, 63, 102, 0.07);
   transition:
     transform 0.25s ease,
     box-shadow 0.25s ease,
     border-color 0.25s ease;
 }
 
-/* BLUE TOP AREA */
-
 .pillar-card::before {
   content: '';
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 118px;
+  inset: 0;
+  pointer-events: none;
   background:
     radial-gradient(
-      circle at 50% 10%,
-      rgba(255, 255, 255, 0.12),
+      circle at 50% 0%,
+      rgba(30, 103, 151, 0.05),
       transparent 40%
-    ),
-    linear-gradient(
-      135deg,
-      #1d6797,
-      #15547f 65%,
-      #0d3f66
     );
 }
 
-/* GOLD BOTTOM CURVE */
-
-.pillar-card::after {
-  content: '';
-  position: absolute;
-  left: -10%;
-  right: -10%;
-  top: 92px;
-  height: 45px;
-  border-radius: 50%;
-  background: #ffffff;
-}
-
-/* HOVER */
-
 .pillar-card:hover {
-  transform: translateY(-5px);
-  border-color: rgba(197, 160, 89, 0.9);
-  box-shadow:
-    0 15px 32px rgba(13, 63, 102, 0.14),
-    0 3px 10px rgba(197, 160, 89, 0.12);
+  transform: translateY(-4px);
+  border-color: #c5a059;
+  box-shadow: 0 12px 28px rgba(13, 63, 102, 0.12);
 }
 
 /* NUMBER */
 
 .pillar-number {
   position: absolute;
-  top: 9px;
-  right: 11px;
+  top: 10px;
+  right: 12px;
   z-index: 3;
-  color: rgba(255, 255, 255, 0.9);
+  color: #15547f;
   font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 700;
 }
 
@@ -824,29 +794,33 @@ body {
 .pillar-content {
   position: relative;
   z-index: 2;
-  padding: 30px 13px 20px;
+  padding: 24px 12px 18px;
   text-align: center;
 }
 
 /* ARABIC */
 
 .pillar-arabic {
-  color: #ffffff;
+  color: #15547f;
   font-family: 'Amiri', Georgia, serif;
   font-size: 22px;
-  line-height: 1.35;
-  min-height: 32px;
-  margin-bottom: 15px;
+  line-height: 1.45;
+  min-height: 55px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
 }
 
-/* ENGLISH TITLE */
+/* ENGLISH */
 
 .pillar-title {
-  margin: 0;
+  margin: 3px 0 0;
   color: #15547f;
   font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 23px;
+  font-size: 22px;
   font-weight: 700;
+  line-height: 1.1;
 }
 
 /* GOLD DIVIDER */
@@ -865,10 +839,9 @@ body {
 
 .pillar-divider span:first-child,
 .pillar-divider span:last-child {
-  width: 22px;
+  width: 20px;
   height: 1px;
   background: #c5a059;
-  opacity: 0.8;
 }
 
 .pillar-divider span:nth-child(2) {
@@ -879,22 +852,19 @@ body {
 /* DESCRIPTION */
 
 .pillar-description {
-  margin: 0;
+  margin: 0 auto;
+  max-width: 175px;
   color: #64748b;
-  font-size: 10px;
+  font-size: 9px;
   line-height: 1.55;
 }
 
 /* TABLET */
 
-@media (max-width: 1050px) {
+@media (max-width: 1000px) {
   .pillars-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 14px;
-  }
-
-  .pillar-card {
-    min-height: 275px;
+    gap: 12px;
   }
 }
 
@@ -902,19 +872,11 @@ body {
 
 @media (max-width: 700px) {
   .pillars-section {
-    padding: 48px 12px 50px;
+    padding: 45px 12px 50px;
   }
 
   .pillars-heading {
-    margin-bottom: 28px;
-  }
-
-  .pillars-title {
-    font-size: 36px;
-  }
-
-  .pillars-subtitle {
-    font-size: 12px;
+    margin-bottom: 26px;
   }
 
   .pillars-grid {
@@ -923,17 +885,15 @@ body {
   }
 
   .pillar-card {
-    min-height: 260px;
-    border-radius: 15px;
+    min-height: 250px;
   }
 
   .pillar-content {
-    padding: 28px 10px 17px;
+    padding: 22px 10px 16px;
   }
 
   .pillar-arabic {
-    font-size: 20px;
-    margin-bottom: 12px;
+    font-size: 21px;
   }
 
   .pillar-title {
@@ -942,7 +902,6 @@ body {
 
   .pillar-description {
     font-size: 9px;
-    line-height: 1.5;
   }
 }
 
@@ -950,38 +909,27 @@ body {
 
 @media (max-width: 480px) {
   .pillars-section {
-    padding: 42px 10px 45px;
-  }
-
-  .pillars-eyebrow {
-    font-size: 8px;
-    letter-spacing: 0.13em;
-  }
-
-  .pillars-line {
-    width: 25px;
+    padding: 40px 10px 45px;
   }
 
   .pillars-title {
     font-size: 34px;
   }
 
-  .pillars-title-icon {
-    width: 20px;
-    height: 20px;
+  .pillars-subtitle {
+    font-size: 11px;
   }
 
   .pillars-grid {
     grid-template-columns: 1fr;
-    gap: 10px;
   }
 
   .pillar-card {
-    min-height: 235px;
+    min-height: 225px;
   }
 
   .pillar-content {
-    padding: 27px 22px 20px;
+    padding: 22px 22px 18px;
   }
 
   .pillar-arabic {
@@ -994,8 +942,6 @@ body {
 
   .pillar-description {
     max-width: 280px;
-    margin-left: auto;
-    margin-right: auto;
     font-size: 10px;
   }
 }

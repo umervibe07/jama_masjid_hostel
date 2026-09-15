@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '@/lib/api';
 import PrayerCountdown from '@/components/PrayerCountdown';
+
 import {
   ArrowRight,
   BookOpen,
@@ -11,7 +12,12 @@ import {
   Calendar,
   Sparkles,
   Star,
+  HandHeart,
+  HandCoins,
+  Moon,
+  Landmark,
 } from 'lucide-react';
+
 import QuranSection from '@/components/QuranSection';
 
 const cards = [
@@ -48,6 +54,7 @@ const pillars = [
     arabic: 'الشَّهَادَة',
     description:
       'Declaration of faith in the Oneness of Allah and the Prophethood of Muhammad ﷺ.',
+    icon: Star,
   },
   {
     number: '02',
@@ -55,6 +62,7 @@ const pillars = [
     arabic: 'الصَّلَاة',
     description:
       'Offering the five daily prayers with devotion, discipline and remembrance of Allah.',
+    icon: HandHeart,
   },
   {
     number: '03',
@@ -62,6 +70,7 @@ const pillars = [
     arabic: 'الزَّكَاة',
     description:
       'Giving obligatory charity to purify wealth and support those in need.',
+    icon: HandCoins,
   },
   {
     number: '04',
@@ -69,6 +78,7 @@ const pillars = [
     arabic: 'الصَّوْم',
     description:
       'Fasting during Ramadan to develop patience, self-discipline and spiritual awareness.',
+    icon: Moon,
   },
   {
     number: '05',
@@ -76,6 +86,7 @@ const pillars = [
     arabic: 'الْحَجّ',
     description:
       'Pilgrimage to the Sacred House in Makkah for those who are physically and financially able.',
+    icon: Landmark,
   },
 ];
 
@@ -121,7 +132,9 @@ export default function Home() {
             <h1 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold leading-none">
               Jama Masjid
               <br />
-              <span className="text-gradient-gold">& Boys' Hostel</span>
+              <span className="text-gradient-gold">
+                & Boys' Hostel
+              </span>
             </h1>
 
             <p className="max-w-xl text-white/80 text-lg mt-6 leading-relaxed">
@@ -275,7 +288,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* NEW: PILLARS OF ISLAM */}
+      {/* PILLARS OF ISLAM */}
       <section className="pillars-section">
         <div className="pillars-container">
           <div className="pillars-heading">
@@ -297,33 +310,41 @@ export default function Home() {
           </div>
 
           <div className="pillars-grid">
-            {pillars.map((pillar) => (
-              <div className="pillar-card" key={pillar.number}>
-                <div className="pillar-number">
-                  {pillar.number}
-                </div>
+            {pillars.map((pillar) => {
+              const Icon = pillar.icon;
 
-                <div className="pillar-content">
-                  <div className="pillar-arabic">
-                    {pillar.arabic}
+              return (
+                <div className="pillar-card" key={pillar.number}>
+                  <div className="pillar-number">
+                    {pillar.number}
                   </div>
 
-                  <h3 className="pillar-title">
-                    {pillar.title}
-                  </h3>
+                  <div className="pillar-content">
+                    <div className="pillar-icon-box">
+                      <Icon className="pillar-icon" />
+                    </div>
 
-                  <div className="pillar-divider">
-                    <span />
-                    <span>◆</span>
-                    <span />
+                    <div className="pillar-arabic">
+                      {pillar.arabic}
+                    </div>
+
+                    <h3 className="pillar-title">
+                      {pillar.title}
+                    </h3>
+
+                    <div className="pillar-divider">
+                      <span />
+                      <span>◆</span>
+                      <span />
+                    </div>
+
+                    <p className="pillar-description">
+                      {pillar.description}
+                    </p>
                   </div>
-
-                  <p className="pillar-description">
-                    {pillar.description}
-                  </p>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
