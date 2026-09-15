@@ -285,22 +285,37 @@ function Applications() {
       toast.error(formatError(e));
     }
   };
+const formatDob = (value) => {
+  if (!value) return "-";
 
-  const formatDob = (value) => {
-    if (!value) return "-";
+  const d = new Date(value);
 
-    const d = new Date(value);
+  if (Number.isNaN(d.getTime())) {
+    return value;
+  }
 
-    if (Number.isNaN(d.getTime())) {
-      return value;
-    }
+  return d.toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+};
 
-    return d.toLocaleDateString("en-IN", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
-  };
+const formatAdmissionDate = (value) => {
+  if (!value) return "-";
+
+  const d = new Date(value);
+
+  if (Number.isNaN(d.getTime())) {
+    return value;
+  }
+
+  return d.toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+};
 
   const printApplication = (x) => {
     if (x.status !== "approved") {

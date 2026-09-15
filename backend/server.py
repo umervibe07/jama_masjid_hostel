@@ -160,7 +160,6 @@ class Prayer(BaseModel):
     isha: str = "19:45"
     jumuah: str = "13:15"
     updated_at: Optional[str] = None
-
 class Application(BaseModel):
     student_name: str = Field(
         min_length=2,
@@ -200,14 +199,25 @@ class Application(BaseModel):
         max_length=20
     )
 
+    # Existing room types remain compatible.
+    # shared_2 is kept only so old applications/data do not break.
     room_type: Literal[
         "single",
         "shared_2",
         "shared_4"
-    ] = "shared_2"
+    ] = "shared_4"
 
+    # New admission date.
+    # Optional so old applications without this field remain safe.
+    admission_date: Optional[str] = None
+
+    # New passport-size photograph.
+    # Stored as a data URL/base64 string.
+    # Optional so old applications without a photo remain safe.
+    photo: Optional[str] = None
+
+    # Existing Room No. system remains unchanged.
     room_no: Optional[str] = None
-
 
 class Event(BaseModel):
     title: str
@@ -772,19 +782,28 @@ async def put_prayer(
 # =========================
 # HOSTEL APPLICATIONS
 # =========================
+
 @api.post("/hostel/applications")
 async def apply(x: Application):
 
     d = x.model_dump()
 
+    # Keep the existing Room No. workflow.
+    # Room No. is assigned later by Admin.
     d["room_no"] = None
 
+    # New applications always get a safe status and unique ID.
     d.update(
         id=uid(),
         status="pending",
         created_at=now()
     )
 
+    # Admission date is already received from the form
+    # and will be stored in MongoDB.
+    #
+    # Photo is also received from the form and stored with
+    # the application document.
     await db.applications.insert_one(d)
 
     return {
@@ -803,6 +822,7 @@ async def apps(u=Depends(admin)):
         "created_at",
         -1
     ).to_list(500)
+
 
 @api.patch("/hostel/applications/{id}")
 async def app_status(
@@ -834,6 +854,7 @@ async def app_status(
             "Invalid status"
         )
 
+    # Existing Room No. system remains unchanged.
     room_no = status.get(
         "room_no",
         app_doc.get("room_no")
@@ -845,11 +866,12 @@ async def app_status(
         if not room_no:
             room_no = None
 
-    # Approved application ka room change nahi hoga
+    # Approved application ka Room No. change nahi hoga.
     if (
         "room_no" in status
         and room_no != app_doc.get("room_no")
     ):
+
         if app_doc.get("status") == "approved":
             raise HTTPException(
                 400,
@@ -862,7 +884,7 @@ async def app_status(
                 "Room No. can only be assigned or changed while the application is Pending."
             )
 
-    # Approval ke liye Room No. compulsory hai
+    # Approval ke liye Room No. compulsory hai.
     if requested_status == "approved" and not room_no:
         raise HTTPException(
             400,
@@ -871,11 +893,34 @@ async def app_status(
 
     update_data = {}
 
+    # Existing Room No. functionality.
     if "room_no" in status:
         update_data["room_no"] = room_no
 
+    # Existing application status functionality.
     if requested_status is not None:
         update_data["status"] = requested_status
+
+    # Optional support for updating admission date from Admin
+    # without breaking existing applications.
+    if "admission_date" in status:
+        admission_date = status.get("admission_date")
+
+        if admission_date is not None:
+            admission_date = str(
+                admission_date
+            ).strip()
+
+        update_data["admission_date"] = admission_date
+
+    # Optional support for updating student photo from Admin.
+    if "photo" in status:
+        photo = status.get("photo")
+
+        if photo is not None:
+            photo = str(photo).strip()
+
+        update_data["photo"] = photo
 
     if not update_data:
         raise HTTPException(
@@ -893,8 +938,17 @@ async def app_status(
     return {
         "updated": r.modified_count > 0,
         "room_no": room_no,
-        "status": requested_status or app_doc.get("status")
+        "status": requested_status or app_doc.get("status"),
+        "admission_date": update_data.get(
+            "admission_date",
+            app_doc.get("admission_date")
+        ),
+        "photo": update_data.get(
+            "photo",
+            app_doc.get("photo")
+        )
     }
+
 
 @api.delete("/hostel/applications/{id}")
 async def app_delete(
@@ -902,9 +956,15 @@ async def app_delete(
     u=Depends(admin)
 ):
 
-    await db.applications.delete_one(
+    result = await db.applications.delete_one(
         {"id": id}
     )
+
+    if result.deleted_count == 0:
+        raise HTTPException(
+            404,
+            "Application not found"
+        )
 
     return {
         "ok": True
