@@ -655,3 +655,257 @@ body {
         font-size: 14px;
     }
 }
+/* =========================================
+   PILLARS OF ISLAM
+   ========================================= */
+
+.pillars-section {
+  position: relative;
+  overflow: hidden;
+  padding: 90px 20px;
+  background:
+    radial-gradient(circle at top left, rgba(197, 160, 89, 0.08), transparent 35%),
+    radial-gradient(circle at bottom right, rgba(13, 59, 46, 0.08), transparent 35%),
+    #faf6ee;
+}
+
+.pillars-container {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.pillars-heading {
+  text-align: center;
+  max-width: 780px;
+  margin: 0 auto 55px;
+}
+
+.pillars-eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  color: #c5a059;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  margin-bottom: 18px;
+}
+
+.pillars-line {
+  width: 45px;
+  height: 1px;
+  background: #c5a059;
+  opacity: 0.65;
+}
+
+.pillars-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 0;
+  color: #0d3b2e;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(38px, 5vw, 58px);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.pillars-title-icon {
+  width: 30px;
+  height: 30px;
+  color: #c5a059;
+  fill: rgba(197, 160, 89, 0.12);
+}
+
+.pillars-subtitle {
+  max-width: 680px;
+  margin: 18px auto 0;
+  color: #64748b;
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+.pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.pillar-card {
+  position: relative;
+  min-height: 330px;
+  overflow: hidden;
+  border: 1px solid rgba(197, 160, 89, 0.28);
+  border-radius: 24px;
+  background: linear-gradient(145deg, #ffffff, #f7f0e4);
+  box-shadow: 0 16px 40px rgba(13, 59, 46, 0.08);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.pillar-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(135deg, rgba(197, 160, 89, 0.08), transparent 40%),
+    radial-gradient(circle at 90% 10%, rgba(13, 59, 46, 0.06), transparent 35%);
+}
+
+.pillar-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(197, 160, 89, 0.6);
+  box-shadow: 0 24px 55px rgba(13, 59, 46, 0.14);
+}
+
+.pillar-number {
+  position: absolute;
+  top: 17px;
+  right: 18px;
+  color: rgba(197, 160, 89, 0.48);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.pillar-content {
+  position: relative;
+  z-index: 1;
+  padding: 55px 24px 28px;
+  text-align: center;
+}
+
+.pillar-arabic {
+  color: #0d3b2e;
+  font-family: 'Amiri', Georgia, serif;
+  font-size: 30px;
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+
+.pillar-title {
+  margin: 0;
+  color: #0d3b2e;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.pillar-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 15px auto 17px;
+}
+
+.pillar-divider span {
+  display: block;
+}
+
+.pillar-divider span:first-child,
+.pillar-divider span:last-child {
+  width: 30px;
+  height: 1px;
+  background: #c5a059;
+  opacity: 0.65;
+}
+
+.pillar-divider span:nth-child(2) {
+  color: #c5a059;
+  font-size: 8px;
+}
+
+.pillar-description {
+  margin: 0;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.75;
+}
+
+@media (max-width: 1100px) {
+  .pillars-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .pillars-section {
+    padding: 70px 16px;
+  }
+
+  .pillars-heading {
+    margin-bottom: 38px;
+  }
+
+  .pillars-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .pillar-card {
+    min-height: 300px;
+    border-radius: 20px;
+  }
+
+  .pillar-content {
+    padding: 50px 18px 24px;
+  }
+
+  .pillar-arabic {
+    font-size: 27px;
+  }
+
+  .pillar-title {
+    font-size: 27px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pillars-section {
+    padding: 60px 14px;
+  }
+
+  .pillars-eyebrow {
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    gap: 8px;
+  }
+
+  .pillars-line {
+    width: 28px;
+  }
+
+  .pillars-title {
+    font-size: 39px;
+  }
+
+  .pillars-title-icon {
+    width: 23px;
+    height: 23px;
+  }
+
+  .pillars-subtitle {
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .pillars-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .pillar-card {
+    min-height: auto;
+  }
+
+  .pillar-content {
+    padding: 45px 24px 28px;
+  }
+}
