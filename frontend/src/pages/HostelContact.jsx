@@ -37,6 +37,7 @@ export default function HostelContact() {
               </p>
 
               <div className="space-y-5 mt-8">
+                {/* Location */}
                 <div className="flex gap-4">
                   <div className="w-11 h-11 rounded-lg bg-[#E6F4F0] grid place-items-center shrink-0">
                     <MapPin className="text-[#059669]" size={20} />
@@ -47,14 +48,19 @@ export default function HostelContact() {
                       Hostel Location
                     </h3>
 
-                    <p className="text-sm text-slate-500 mt-1">
-                      Private Boys Hostel
+                    <p className="text-sm text-slate-500 mt-1 leading-6">
+                      Boys' Hostel
                       <br />
-                      Location details can be provided by hostel management.
+                      Beside Jama Masjid Complex
+                      <br />
+                      Old Badnera, Amravati
+                      <br />
+                      Maharashtra - 444701, India
                     </p>
                   </div>
                 </div>
 
+                {/* Phone */}
                 <div className="flex gap-4">
                   <div className="w-11 h-11 rounded-lg bg-[#E6F4F0] grid place-items-center shrink-0">
                     <Phone className="text-[#059669]" size={20} />
@@ -66,11 +72,19 @@ export default function HostelContact() {
                     </h3>
 
                     <p className="text-sm text-slate-500 mt-1">
-                      Contact number will be provided by hostel management.
+                      Ejaz Khan
+                      <br />
+                      <a
+                        href="tel:9823861950"
+                        className="text-[#059669] font-medium hover:underline"
+                      >
+                        +91 98238 61950
+                      </a>
                     </p>
                   </div>
                 </div>
 
+                {/* Email */}
                 <div className="flex gap-4">
                   <div className="w-11 h-11 rounded-lg bg-[#E6F4F0] grid place-items-center shrink-0">
                     <Mail className="text-[#059669]" size={20} />
@@ -82,11 +96,17 @@ export default function HostelContact() {
                     </h3>
 
                     <p className="text-sm text-slate-500 mt-1">
-                      Hostel email will be provided by hostel management.
+                      <a
+                        href="mailto:umairvibe07@gmail.com"
+                        className="text-[#059669] font-medium hover:underline break-all"
+                      >
+                        umairvibe07@gmail.com
+                      </a>
                     </p>
                   </div>
                 </div>
 
+                {/* Enquiry Hours */}
                 <div className="flex gap-4">
                   <div className="w-11 h-11 rounded-lg bg-[#E6F4F0] grid place-items-center shrink-0">
                     <Clock className="text-[#059669]" size={20} />
@@ -98,7 +118,7 @@ export default function HostelContact() {
                     </h3>
 
                     <p className="text-sm text-slate-500 mt-1">
-                      Please contact hostel management during working hours.
+                      9:00 AM to 9:00 PM
                     </p>
                   </div>
                 </div>
@@ -125,6 +145,7 @@ export default function HostelContact() {
                   <p className="font-semibold text-[#0D3B2E]">
                     Room Availability
                   </p>
+
                   <p className="text-sm text-slate-500 mt-1">
                     Ask about available rooms and current occupancy.
                   </p>
@@ -134,6 +155,7 @@ export default function HostelContact() {
                   <p className="font-semibold text-[#0D3B2E]">
                     Admission
                   </p>
+
                   <p className="text-sm text-slate-500 mt-1">
                     Get information about the hostel admission process.
                   </p>
@@ -143,6 +165,7 @@ export default function HostelContact() {
                   <p className="font-semibold text-[#0D3B2E]">
                     Fees & Facilities
                   </p>
+
                   <p className="text-sm text-slate-500 mt-1">
                     Contact management for current fees and facility details.
                   </p>
@@ -152,6 +175,7 @@ export default function HostelContact() {
                   <p className="font-semibold text-[#0D3B2E]">
                     Student Complaints
                   </p>
+
                   <p className="text-sm text-slate-500 mt-1">
                     Residents can submit complaints through the Student
                     Complaint section.
