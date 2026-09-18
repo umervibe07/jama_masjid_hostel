@@ -1,16 +1,33 @@
-import { useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
-import { Menu, X, Moon, ShieldCheck } from 'lucide-react';
+import { useState } from "react";
 
-const links = [
-  ['/', 'Home'],
-  ['/about', 'About'],
-  ['/prayer-timings', 'Prayer Timings'],
-  ['/hostel', 'Hostel'],
-  ['/facilities', 'Facilities'],
-  ['/gallery', 'Gallery'],
-  ['/events', 'Events'],
-  ['/contact', 'Contact'],
+import { Link, NavLink } from "react-router-dom";
+
+import {
+  Menu,
+  X,
+  Moon,
+  ShieldCheck,
+  Building2,
+  MessageSquareWarning,
+} from "lucide-react";
+
+const mainLinks = [
+  ["/", "Home"],
+  ["/about", "About"],
+  ["/prayer-timings", "Prayer Timings"],
+  ["/gallery", "Gallery"],
+  ["/events", "Events"],
+  ["/contact", "Contact"],
+];
+
+const hostelLinks = [
+  ["/private-hostel", "Hostel Home"],
+  ["/private-hostel/rooms", "Rooms"],
+  ["/private-hostel/facilities", "Facilities"],
+  ["/private-hostel/admission", "Admission"],
+  ["/private-hostel/rules", "Hostel Rules"],
+  ["/private-hostel/contact", "Hostel Contact"],
+  ["/private-hostel/complaint", "Student Complaint"],
 ];
 
 export default function Navbar() {
@@ -37,22 +54,24 @@ export default function Navbar() {
               </div>
 
               <div className="font-arabic text-xs text-[#C5A059]">
-                جامع مسجد و بوائز ہاسٹل
+                جامع مسجد
               </div>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex gap-1 items-center">
-            {links.map(([to, label]) => (
+
+            {mainLinks.map(([to, label]) => (
               <NavLink
                 key={to}
                 to={to}
+                end={to === "/"}
                 className={({ isActive }) =>
                   `px-3 py-2 rounded-md text-sm ${
                     isActive
-                      ? 'text-[#D4AF37] bg-white/5'
-                      : 'text-white/85 hover:text-[#D4AF37]'
+                      ? "text-[#D4AF37] bg-white/5"
+                      : "text-white/85 hover:text-[#D4AF37]"
                   }`
                 }
               >
@@ -60,14 +79,44 @@ export default function Navbar() {
               </NavLink>
             ))}
 
+            {/* Private Boys Hostel */}
+            <NavLink
+              to="/private-hostel"
+              className={({ isActive }) =>
+                `px-3 py-2 rounded-md text-sm flex items-center gap-1.5 ${
+                  isActive
+                    ? "text-[#D4AF37] bg-white/5"
+                    : "text-white/85 hover:text-[#D4AF37]"
+                }`
+              }
+            >
+              <Building2 size={16} />
+              Private Boys Hostel
+            </NavLink>
+
+            {/* Student Complaint */}
+            <NavLink
+              to="/private-hostel/complaint"
+              className={({ isActive }) =>
+                `px-3 py-2 rounded-md text-sm flex items-center gap-1.5 ${
+                  isActive
+                    ? "text-[#D4AF37] bg-white/5"
+                    : "text-white/85 hover:text-[#D4AF37]"
+                }`
+              }
+            >
+              <MessageSquareWarning size={16} />
+              Complaint
+            </NavLink>
+
             {/* Admin */}
             <NavLink
               to="/admin"
               className={({ isActive }) =>
                 `px-3 py-2 rounded-md text-sm flex items-center gap-1.5 ${
                   isActive
-                    ? 'text-[#D4AF37] bg-white/5'
-                    : 'text-white/85 hover:text-[#D4AF37]'
+                    ? "text-[#D4AF37] bg-white/5"
+                    : "text-white/85 hover:text-[#D4AF37]"
                 }`
               }
             >
@@ -76,10 +125,10 @@ export default function Navbar() {
             </NavLink>
           </div>
 
-          {/* Admission Button */}
+          {/* Hostel Admission Button */}
           <div className="hidden lg:block">
             <Link
-              to="/admission"
+              to="/private-hostel/admission"
               className="btn-gold px-5 py-2.5 rounded-full text-sm"
             >
               Hostel Admission
@@ -100,7 +149,29 @@ export default function Navbar() {
         {open && (
           <div className="lg:hidden pb-4 border-t border-white/10 pt-2">
 
-            {links.map(([to, label]) => (
+            {/* Jama Masjid */}
+            <div className="text-xs uppercase tracking-wider text-[#C5A059] px-3 pt-3 pb-1">
+              Jama Masjid
+            </div>
+
+            {mainLinks.map(([to, label]) => (
+              <NavLink
+                key={to}
+                to={to}
+                end={to === "/"}
+                onClick={() => setOpen(false)}
+                className="block px-3 py-2.5 text-sm"
+              >
+                {label}
+              </NavLink>
+            ))}
+
+            {/* Private Boys Hostel */}
+            <div className="text-xs uppercase tracking-wider text-[#C5A059] px-3 pt-4 pb-1">
+              Private Boys Hostel
+            </div>
+
+            {hostelLinks.map(([to, label]) => (
               <NavLink
                 key={to}
                 to={to}
@@ -112,17 +183,20 @@ export default function Navbar() {
             ))}
 
             {/* Mobile Admin */}
-            <NavLink
-              to="/admin"
-              onClick={() => setOpen(false)}
-              className="flex items-center gap-2 px-3 py-2.5 text-sm"
-            >
-              <ShieldCheck size={17} />
-              Admin
-            </NavLink>
+            <div className="border-t border-white/10 mt-3 pt-3">
+              <NavLink
+                to="/admin"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-2 px-3 py-2.5 text-sm"
+              >
+                <ShieldCheck size={17} />
+                Admin
+              </NavLink>
+            </div>
 
+            {/* Mobile Admission */}
             <Link
-              to="/admission"
+              to="/private-hostel/admission"
               onClick={() => setOpen(false)}
               className="btn-gold block text-center mt-3 py-3 rounded-full"
             >

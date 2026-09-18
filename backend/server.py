@@ -269,6 +269,13 @@ class Facility(BaseModel):
     image: str = ""
 
 
+class HostelComplaint(BaseModel):
+    student_name: str = Field(min_length=2, max_length=100)
+    photo: Optional[str] = None
+    complaint_description: str = Field(min_length=5, max_length=2000)
+    location_description: str = Field(min_length=2, max_length=500)
+
+
 # =========================
 # MOSQUE STAFF
 # =========================
@@ -964,6 +971,59 @@ async def app_delete(
         raise HTTPException(
             404,
             "Application not found"
+        )
+
+    return {
+        "ok": True
+    }
+
+
+# =========================
+# HOSTEL COMPLAINTS
+# =========================
+
+@api.post("/hostel/complaints")
+async def hostel_complaint_add(x: HostelComplaint):
+    d = x.model_dump()
+
+    d.update(
+        id=uid(),
+        status="pending",
+        created_at=now()
+    )
+
+    await db.hostel_complaints.insert_one(d)
+
+    return {
+        "message": "Complaint submitted successfully",
+        "complaint_id": d["id"]
+    }
+
+
+@api.get("/hostel/complaints")
+async def hostel_complaints_list(u=Depends(admin)):
+    return await db.hostel_complaints.find(
+        {},
+        {"_id": 0}
+    ).sort(
+        "created_at",
+        -1
+    ).to_list(500)
+
+
+@api.delete("/hostel/complaints/{id}")
+async def hostel_complaint_delete(
+    id: str,
+    u=Depends(admin)
+):
+    result = await db.hostel_complaints.delete_one(
+        {"id": id}
+    )
+
+    if result.deleted_count == 0:
+        raise HTTPException(
+            404,
+            "Complaint not found"
         )
 
     return {

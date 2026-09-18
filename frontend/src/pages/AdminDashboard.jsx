@@ -21,6 +21,7 @@ import {
   Building2,
   Eye,
   DoorOpen,
+  MessageSquareWarning,
 } from "lucide-react";
 
 /* =========================
@@ -38,6 +39,7 @@ const tabs = [
   ["staff", "Mosque Staff", Users],
   ["reviews", "Visitor Reviews", Star],
   ["contact", "Contact Info", MapPin],
+  ["complaints", "Hostel Complaints", MessageSquareWarning],
 ];
 
 /* =========================
@@ -99,6 +101,7 @@ export default function AdminDashboard() {
         {t === "staff" && <Staff />}
         {t === "reviews" && <VisitorReviews />}
         {t === "contact" && <Contact />}
+        {t === "complaints" && <HostelComplaints />}
       </main>
     </div>
   );
@@ -3342,3 +3345,275 @@ function VisitorReviews() {
     </div>
   );
 }
+
+
+/* =========================
+   HOSTEL COMPLAINTS
+========================= */
+
+function HostelComplaints() {
+  const [complaints, setComplaints] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [viewId, setViewId] = useState(null);
+
+  const loadComplaints = async () => {
+    try {
+      setLoading(true);
+
+      const res = await api.get("/hostel/complaints");
+      setComplaints(res.data || []);
+    } catch (e) {
+      toast.error(formatError(e));
+      setComplaints([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadComplaints();
+  }, []);
+
+  const deleteComplaint = async (id) => {
+    if (!window.confirm("Delete this complaint?")) {
+      return;
+    }
+
+    try {
+      await api.delete(`/hostel/complaints/${id}`);
+      toast.success("Complaint deleted");
+      await loadComplaints();
+    } catch (e) {
+      toast.error(formatError(e));
+    }
+  };
+
+  const formatDate = (value) => {
+    if (!value) return "-";
+
+    const d = new Date(value);
+
+    if (Number.isNaN(d.getTime())) {
+      return value;
+    }
+
+    return d.toLocaleString("en-IN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  const selectedComplaint = complaints.find(
+    (item) => item.id === viewId
+  );
+
+  return (
+    <div>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div>
+          <h2 className="font-heading text-3xl text-[#0D3B2E]">
+            Hostel Complaints ({complaints.length})
+          </h2>
+
+          <p className="text-sm text-slate-500 mt-1">
+            Review complaints submitted by Private Boys Hostel students.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          onClick={loadComplaints}
+          className="px-4 py-2.5 rounded-full border border-[#0D3B2E] text-[#0D3B2E] text-sm"
+        >
+          Refresh
+        </button>
+      </div>
+
+      {loading && (
+        <div className="card-elegant p-10 text-center text-slate-500">
+          Loading complaints...
+        </div>
+      )}
+
+      {!loading && complaints.length === 0 && (
+        <div className="card-elegant p-10 text-center">
+          <MessageSquareWarning className="w-12 h-12 text-[#C5A059] mx-auto mb-4" />
+
+          <h3 className="font-heading text-2xl text-[#0D3B2E]">
+            No Complaints Found
+          </h3>
+
+          <p className="text-sm text-slate-500 mt-2">
+            New Private Boys Hostel complaints will appear here.
+          </p>
+        </div>
+      )}
+
+      {!loading && complaints.length > 0 && (
+        <div className="space-y-4">
+          {complaints.map((item) => (
+            <div
+              key={item.id}
+              className="card-elegant p-5"
+            >
+              <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-5">
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <h3 className="font-heading text-xl text-[#0D3B2E]">
+                      {item.student_name || "-"}
+                    </h3>
+
+                    <span className="text-xs font-semibold px-3 py-1 rounded-full bg-amber-50 text-amber-700">
+                      Hostel Complaint
+                    </span>
+                  </div>
+
+                  <p className="text-xs text-slate-500 mt-2">
+                    Submitted: {formatDate(item.created_at)}
+                  </p>
+
+                  <p className="text-sm text-slate-600 mt-4 leading-6">
+                    {item.complaint_description || "-"}
+                  </p>
+
+                  <div className="mt-3 text-sm">
+                    <span className="font-semibold text-slate-700">
+                      Location:
+                    </span>{" "}
+                    <span className="text-slate-600">
+                      {item.location_description || "-"}
+                    </span>
+                  </div>
+
+                  {item.photo && (
+                    <div className="mt-4">
+                      <img
+                        src={item.photo}
+                        alt="Complaint evidence"
+                        className="w-32 h-24 object-cover rounded-xl border border-slate-200"
+                      />
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex flex-wrap gap-2 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => setViewId(item.id)}
+                    className="border border-slate-300 px-4 py-2 rounded-full text-sm flex items-center gap-2"
+                  >
+                    <Eye className="w-4 h-4" />
+                    View
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => deleteComplaint(item.id)}
+                    className="px-4 py-2 rounded-full bg-red-50 text-red-600 hover:bg-red-100 text-sm flex items-center gap-2"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {selectedComplaint && (
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6">
+            <div className="flex justify-between items-center mb-6">
+              <div>
+                <h3 className="font-heading text-2xl text-[#0D3B2E]">
+                  Complaint Details
+                </h3>
+
+                <p className="text-xs text-slate-500 mt-1">
+                  Private Boys Hostel
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setViewId(null)}
+                className="text-slate-500 hover:text-slate-900 text-xl"
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="space-y-5">
+              <div>
+                <span className="text-xs font-semibold uppercase text-slate-500">
+                  Student Name
+                </span>
+
+                <p className="text-base text-[#0D3B2E] mt-1">
+                  {selectedComplaint.student_name || "-"}
+                </p>
+              </div>
+
+              <div>
+                <span className="text-xs font-semibold uppercase text-slate-500">
+                  Complaint Description
+                </span>
+
+                <p className="text-sm text-slate-700 leading-7 mt-1 whitespace-pre-wrap">
+                  {selectedComplaint.complaint_description || "-"}
+                </p>
+              </div>
+
+              <div>
+                <span className="text-xs font-semibold uppercase text-slate-500">
+                  Location Description
+                </span>
+
+                <p className="text-sm text-slate-700 leading-6 mt-1">
+                  {selectedComplaint.location_description || "-"}
+                </p>
+              </div>
+
+              <div>
+                <span className="text-xs font-semibold uppercase text-slate-500">
+                  Submitted
+                </span>
+
+                <p className="text-sm text-slate-700 mt-1">
+                  {formatDate(selectedComplaint.created_at)}
+                </p>
+              </div>
+
+              {selectedComplaint.photo && (
+                <div>
+                  <span className="text-xs font-semibold uppercase text-slate-500">
+                    Photo / Evidence
+                  </span>
+
+                  <img
+                    src={selectedComplaint.photo}
+                    alt="Complaint evidence"
+                    className="w-full max-h-96 object-contain rounded-xl border border-slate-200 bg-slate-50 mt-2"
+                  />
+                </div>
+              )}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setViewId(null)}
+              className="btn-primary-green w-full py-3 rounded-full mt-7"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+

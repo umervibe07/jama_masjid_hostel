@@ -1,24 +1,30 @@
-import { useRef, useState } from 'react';
-import { api, formatError } from '@/lib/api';
-import { toast } from 'sonner';
-import { CheckCircle2, Loader2, Printer, Download } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { Hero } from './About';
+import { useRef, useState } from "react";
+
+import { api, formatError } from "@/lib/api";
+import { toast } from "sonner";
+import {
+  CheckCircle2,
+  Loader2,
+  Printer,
+  Download,
+} from "lucide-react";
+import { Link } from "react-router-dom";
+import { Hero } from "./About";
 
 const initial = {
-  student_name: '',
-  father_name: '',
-  dob: '',
-  mobile: '',
-  email: '',
-  address: '',
-  institution: '',
-  course: '',
-  year: '',
-  emergency_contact: '',
-  room_type: 'shared_4',
-  admission_date: '',
-  photo: '',
+  student_name: "",
+  father_name: "",
+  dob: "",
+  mobile: "",
+  email: "",
+  address: "",
+  institution: "",
+  course: "",
+  year: "",
+  emergency_contact: "",
+  room_type: "shared_4",
+  admission_date: "",
+  photo: "",
 };
 
 export default function Admission() {
@@ -26,38 +32,43 @@ export default function Admission() {
   const [busy, setBusy] = useState(false);
   const [success, setSuccess] = useState(null);
   const [submittedForm, setSubmittedForm] = useState(null);
+
   const photoInputRef = useRef(null);
 
   const submit = async (e) => {
     e.preventDefault();
 
     if (!f.admission_date) {
-      toast.error('Please select Date of Admission');
+      toast.error("Please select Date of Admission");
       return;
     }
 
     if (!f.photo) {
-      toast.error('Please upload a passport-size photograph');
+      toast.error("Please upload a passport-size photograph");
       return;
     }
 
     setBusy(true);
 
     try {
-      const { data } = await api.post('/hostel/applications', f);
+      const { data } = await api.post("/hostel/applications", f);
 
       const savedForm = {
         ...f,
         application_id: data.application_id,
         message: data.message,
-        status: 'pending',
+        status: "pending",
       };
 
       setSubmittedForm(savedForm);
       setSuccess(data);
       setF(initial);
 
-      toast.success('Application submitted successfully');
+      if (photoInputRef.current) {
+        photoInputRef.current.value = "";
+      }
+
+      toast.success("Application submitted successfully");
     } catch (x) {
       toast.error(formatError(x));
     } finally {
@@ -70,13 +81,13 @@ export default function Admission() {
 
     if (!file) return;
 
-    if (!file.type.startsWith('image/')) {
-      toast.error('Please select an image file');
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select an image file");
       return;
     }
 
     if (file.size > 2 * 1024 * 1024) {
-      toast.error('Photo size must be less than 2 MB');
+      toast.error("Photo size must be less than 2 MB");
       return;
     }
 
@@ -104,9 +115,9 @@ export default function Admission() {
     const x = submittedForm;
 
     const formatDate = (value) => {
-      if (!value) return '';
+      if (!value) return "";
 
-      const parts = value.split('-');
+      const parts = value.split("-");
 
       if (parts.length !== 3) return value;
 
@@ -118,7 +129,9 @@ export default function Admission() {
       <html>
       <head>
         <meta charset="UTF-8" />
-        <title>Admission Form - ${x.application_id}</title>
+        <title>Private Boys Hostel Admission Form - ${
+          x.application_id
+        }</title>
 
         <style>
           @page {
@@ -163,6 +176,12 @@ export default function Admission() {
             margin: 7px 0 0;
             font-size: 16px;
             color: #15547f;
+          }
+
+          .header p {
+            margin: 7px 0 0;
+            font-size: 11px;
+            color: #64748b;
           }
 
           .status {
@@ -214,8 +233,18 @@ export default function Admission() {
             flex: 1;
           }
 
+          .notice {
+            margin-top: 18px;
+            padding: 12px;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+            font-size: 11px;
+            line-height: 1.6;
+          }
+
           .footer {
-            margin-top: 55mm;
+            margin-top: 35mm;
             border-top: 1px solid #cbd5e1;
             padding-top: 18px;
             display: flex;
@@ -237,8 +266,9 @@ export default function Admission() {
         <div class="page">
 
           <div class="header">
-            <h1>JAMA MASJID &amp; BOYS' HOSTEL</h1>
+            <h1>PRIVATE BOYS HOSTEL</h1>
             <h2>STUDENT ADMISSION FORM</h2>
+            <p>Independently managed private accommodation facility</p>
             <div class="status">APPLICATION SUBMITTED</div>
           </div>
 
@@ -248,17 +278,17 @@ export default function Admission() {
 
               <div class="row">
                 <div class="label">Application ID</div>
-                <div class="value">${x.application_id || ''}</div>
+                <div class="value">${x.application_id || ""}</div>
               </div>
 
               <div class="row">
                 <div class="label">Student Name</div>
-                <div class="value">${x.student_name || ''}</div>
+                <div class="value">${x.student_name || ""}</div>
               </div>
 
               <div class="row">
                 <div class="label">Father / Guardian</div>
-                <div class="value">${x.father_name || ''}</div>
+                <div class="value">${x.father_name || ""}</div>
               </div>
 
               <div class="row">
@@ -273,12 +303,12 @@ export default function Admission() {
 
               <div class="row">
                 <div class="label">Mobile Number</div>
-                <div class="value">${x.mobile || ''}</div>
+                <div class="value">${x.mobile || ""}</div>
               </div>
 
               <div class="row">
                 <div class="label">Email</div>
-                <div class="value">${x.email || ''}</div>
+                <div class="value">${x.email || ""}</div>
               </div>
 
             </div>
@@ -286,49 +316,56 @@ export default function Admission() {
             ${
               x.photo
                 ? `<img class="photo" src="${x.photo}" alt="Passport Photo" />`
-                : ''
+                : ""
             }
 
           </div>
 
           <div class="row">
             <div class="label">Permanent Address</div>
-            <div class="value">${x.address || ''}</div>
+            <div class="value">${x.address || ""}</div>
           </div>
 
           <div class="row">
             <div class="label">College / Institution</div>
-            <div class="value">${x.institution || ''}</div>
+            <div class="value">${x.institution || ""}</div>
           </div>
 
           <div class="row">
             <div class="label">Course</div>
-            <div class="value">${x.course || ''}</div>
+            <div class="value">${x.course || ""}</div>
           </div>
 
           <div class="row">
             <div class="label">Year / Semester</div>
-            <div class="value">${x.year || ''}</div>
+            <div class="value">${x.year || ""}</div>
           </div>
 
           <div class="row">
             <div class="label">Emergency Contact</div>
-            <div class="value">${x.emergency_contact || ''}</div>
+            <div class="value">${x.emergency_contact || ""}</div>
           </div>
 
           <div class="row">
             <div class="label">Preferred Room Type</div>
-            <div class="value">${x.room_type || ''}</div>
+            <div class="value">${x.room_type || ""}</div>
           </div>
 
           <div class="row">
-            <div class="label">Status</div>
+            <div class="label">Application Status</div>
             <div class="value">Pending</div>
+          </div>
+
+          <div class="notice">
+            This application is for accommodation at the Private Boys Hostel.
+            The hostel is independently managed and is separate from Jama
+            Masjid. Hostel admission, room allocation, fees and related
+            services are handled by the private hostel management.
           </div>
 
           <div class="footer">
             <div>
-              Jama Masjid &amp; Boys' Hostel
+              Private Boys Hostel
             </div>
 
             <div class="signature">
@@ -342,14 +379,16 @@ export default function Admission() {
     `;
 
     const blob = new Blob([html], {
-      type: 'text/html;charset=utf-8',
+      type: "text/html;charset=utf-8",
     });
 
     const url = URL.createObjectURL(blob);
 
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = `Admission-Form-${x.application_id || 'form'}.html`;
+    a.download = `Private-Hostel-Admission-Form-${
+      x.application_id || "form"
+    }.html`;
 
     document.body.appendChild(a);
     a.click();
@@ -359,7 +398,7 @@ export default function Admission() {
   };
 
   const input =
-    'w-full mt-1 px-4 py-3 rounded-xl border border-[#E2E8F0] outline-none focus:border-[#059669]';
+    "w-full mt-1 px-4 py-3 rounded-xl border border-[#E2E8F0] outline-none focus:border-[#059669]";
 
   if (success && submittedForm) {
     return (
@@ -380,6 +419,15 @@ export default function Admission() {
             <p className="text-xs text-slate-500 mt-3">
               Application ID: {success.application_id}
             </p>
+
+            <div className="mt-6 p-4 rounded-xl bg-[#E6F4F0] text-sm text-slate-600">
+              Your application is for the{" "}
+              <strong className="text-[#0D3B2E]">
+                Private Boys Hostel
+              </strong>
+              . Hostel admission and management are handled separately from
+              Jama Masjid.
+            </div>
 
             <div className="mt-6 grid sm:grid-cols-2 gap-3">
 
@@ -417,10 +465,10 @@ export default function Admission() {
               </button>
 
               <Link
-                to="/"
+                to="/private-hostel"
                 className="btn-primary-green px-5 py-2.5 rounded-full"
               >
-                Home
+                Hostel Home
               </Link>
 
             </div>
@@ -429,21 +477,29 @@ export default function Admission() {
         </div>
 
         <div className="admission-print-record">
+
           <div className="text-center border-b-2 border-[#C5A059] pb-4">
+
             <h1 className="text-2xl font-bold text-[#0D3B2E]">
-              JAMA MASJID &amp; BOYS' HOSTEL
+              PRIVATE BOYS HOSTEL
             </h1>
 
             <h2 className="text-lg font-semibold text-[#15547F] mt-2">
               STUDENT ADMISSION FORM
             </h2>
 
+            <p className="text-xs text-slate-500 mt-2">
+              Independently managed private accommodation facility
+            </p>
+
             <div className="inline-block mt-3 px-4 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold">
               APPLICATION SUBMITTED
             </div>
+
           </div>
 
           <div className="flex gap-6 mt-8">
+
             <div className="flex-1">
 
               <PrintRow
@@ -492,6 +548,7 @@ export default function Admission() {
                 className="w-[120px] h-[150px] object-cover border border-slate-300 p-1"
               />
             )}
+
           </div>
 
           <PrintRow
@@ -525,14 +582,21 @@ export default function Admission() {
           />
 
           <PrintRow
-            label="Status"
+            label="Application Status"
             value="Pending"
           />
 
-          <div className="flex justify-between mt-24 pt-6 border-t border-slate-300 text-xs text-slate-500">
-            <span>Jama Masjid &amp; Boys' Hostel</span>
+          <div className="mt-6 p-4 border border-emerald-200 bg-emerald-50 text-xs text-slate-600 leading-5">
+            This application is for accommodation at the Private Boys
+            Hostel. The hostel is independently managed and is separate from
+            Jama Masjid.
+          </div>
+
+          <div className="flex justify-between mt-16 pt-6 border-t border-slate-300 text-xs text-slate-500">
+            <span>Private Boys Hostel</span>
             <span>Authorized Signature</span>
           </div>
+
         </div>
 
         <style>{`
@@ -587,26 +651,50 @@ export default function Admission() {
   }
 
   const fields = [
-    ['student_name', 'Student Name'],
-    ['father_name', 'Father / Guardian'],
-    ['dob', 'Date of Birth'],
-    ['mobile', 'Mobile Number'],
-    ['email', 'Email'],
-    ['address', 'Permanent Address'],
-    ['institution', 'College / Institution'],
-    ['course', 'Course'],
-    ['year', 'Year / Semester'],
-    ['emergency_contact', 'Emergency Contact'],
+    ["student_name", "Student Name"],
+    ["father_name", "Father / Guardian"],
+    ["dob", "Date of Birth"],
+    ["mobile", "Mobile Number"],
+    ["email", "Email"],
+    ["address", "Permanent Address"],
+    ["institution", "College / Institution"],
+    ["course", "Course"],
+    ["year", "Year / Semester"],
+    ["emergency_contact", "Emergency Contact"],
   ];
 
   return (
     <>
       <Hero
-        title="Hostel Admission Form"
-        sub="Complete the application and our team will contact you."
+        title="Private Boys Hostel Admission"
+        sub="Apply for accommodation at the independently managed Private Boys Hostel."
       />
 
+      {/* INFORMATION */}
+      <section className="py-10 bg-white">
+        <div className="max-w-3xl mx-auto px-4">
+
+          <div className="card-elegant bg-[#E6F4F0] p-6 md:p-8">
+
+            <h2 className="font-heading text-2xl text-[#0D3B2E]">
+              Before You Apply
+            </h2>
+
+            <p className="text-slate-600 leading-7 mt-3">
+              This admission form is for the Private Boys Hostel. The hostel
+              is independently managed and is separate from Jama Masjid.
+              Hostel admission, room allocation, fees and related services
+              are handled by the private hostel management.
+            </p>
+
+          </div>
+
+        </div>
+      </section>
+
+      {/* FORM */}
       <section className="py-16 islamic-pattern">
+
         <form
           onSubmit={submit}
           className="max-w-3xl mx-auto px-4 card-elegant p-6 sm:p-10 grid sm:grid-cols-2 gap-5"
@@ -616,16 +704,17 @@ export default function Admission() {
             <label
               key={k}
               className={
-                k === 'address' || k === 'email'
-                  ? 'sm:col-span-2'
-                  : ''
+                k === "address" || k === "email"
+                  ? "sm:col-span-2"
+                  : ""
               }
             >
+
               <span className="text-sm font-semibold text-[#0D3B2E]">
                 {l} *
               </span>
 
-              {k === 'address' ? (
+              {k === "address" ? (
                 <textarea
                   required
                   rows="3"
@@ -642,11 +731,11 @@ export default function Admission() {
                 <input
                   required
                   type={
-                    k === 'dob'
-                      ? 'date'
-                      : k === 'email'
-                        ? 'email'
-                        : 'text'
+                    k === "dob"
+                      ? "date"
+                      : k === "email"
+                        ? "email"
+                        : "text"
                   }
                   className={input}
                   value={f[k]}
@@ -658,10 +747,13 @@ export default function Admission() {
                   }
                 />
               )}
+
             </label>
           ))}
 
+          {/* DATE OF ADMISSION */}
           <label>
+
             <span className="text-sm font-semibold text-[#0D3B2E]">
               Date of Admission *
             </span>
@@ -678,9 +770,12 @@ export default function Admission() {
                 })
               }
             />
+
           </label>
 
+          {/* PHOTO */}
           <label>
+
             <span className="text-sm font-semibold text-[#0D3B2E]">
               Passport-size Photograph *
             </span>
@@ -700,16 +795,21 @@ export default function Admission() {
 
             {f.photo && (
               <div className="mt-3">
+
                 <img
                   src={f.photo}
                   alt="Passport preview"
                   className="w-[90px] h-[115px] object-cover border border-slate-300 rounded-lg p-1"
                 />
+
               </div>
             )}
+
           </label>
 
+          {/* ROOM TYPE */}
           <label className="sm:col-span-2">
+
             <span className="text-sm font-semibold text-[#0D3B2E]">
               Preferred Room Type *
             </span>
@@ -724,6 +824,7 @@ export default function Admission() {
                 })
               }
             >
+
               <option value="single">
                 Single Room — ₹2,000/month
               </option>
@@ -731,24 +832,37 @@ export default function Admission() {
               <option value="shared_4">
                 Shared 4 Beds — ₹1,000/month
               </option>
+
             </select>
+
           </label>
 
+          {/* NOTE */}
+          <div className="sm:col-span-2 rounded-xl bg-slate-50 border border-slate-200 p-4 text-sm text-slate-600 leading-6">
+            By submitting this form, you are applying for accommodation at
+            the Private Boys Hostel. Hostel admission and management are
+            separate from Jama Masjid.
+          </div>
+
+          {/* SUBMIT */}
           <button
             disabled={busy}
             className="btn-gold sm:col-span-2 py-4 rounded-full inline-flex justify-center items-center gap-2"
           >
+
             {busy ? (
               <>
                 <Loader2 className="animate-spin w-4" />
                 Submitting…
               </>
             ) : (
-              'Submit Application'
+              "Submit Hostel Application"
             )}
+
           </button>
 
         </form>
+
       </section>
     </>
   );
@@ -756,9 +870,9 @@ export default function Admission() {
 
 function PrintRow({ label, value, date = false }) {
   const formatDate = (v) => {
-    if (!v) return '';
+    if (!v) return "";
 
-    const parts = v.split('-');
+    const parts = v.split("-");
 
     if (parts.length !== 3) return v;
 
@@ -767,13 +881,15 @@ function PrintRow({ label, value, date = false }) {
 
   return (
     <div className="flex border-b border-slate-200 py-2 text-sm">
+
       <div className="w-48 font-semibold text-slate-600">
         {label}
       </div>
 
       <div className="flex-1 text-slate-900">
-        {date ? formatDate(value) : value || ''}
+        {date ? formatDate(value) : value || ""}
       </div>
+
     </div>
   );
 }
